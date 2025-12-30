@@ -1,0 +1,86 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int n, i, j, temp;
+    int request[50];
+    int head, disk_size, direction;
+    int totalMovement = 0;
+
+    printf("Enter number of disk requests: ");
+    scanf("%d", &n);
+
+    printf("Enter disk request sequence:\n");
+    for (i = 0; i < n; i++)
+        scanf("%d", &request[i]);
+
+    printf("Enter initial head position: ");
+    scanf("%d", &head);
+
+    printf("Enter disk size (number of cylinders): ");
+    scanf("%d", &disk_size);
+
+    printf("Enter direction (0 = left, 1 = right): ");
+    scanf("%d", &direction);
+
+    /* Add end points */
+    request[n] = head;
+    n++;
+
+    /* Sort the request array */
+    for (i = 0; i < n; i++) {
+        for (j = i + 1; j < n; j++) {
+            if (request[i] > request[j]) {
+                temp = request[i];
+                request[i] = request[j];
+                request[j] = temp;
+            }
+        }
+    }
+
+    /* Find head index */
+    for (i = 0; i < n; i++) {
+        if (request[i] == head)
+            break;
+    }
+
+    printf("\nDisk Head Movement:\n");
+    printf("%d", head);
+
+    if (direction == 1) {  // Right direction
+        for (j = i + 1; j < n; j++) {
+            totalMovement += abs(request[j] - head);
+            head = request[j];
+            printf(" -> %d", head);
+        }
+
+        totalMovement += abs((disk_size - 1) - head);
+        head = disk_size - 1;
+        printf(" -> %d", head);
+
+        for (j = i - 1; j >= 0; j--) {
+            totalMovement += abs(request[j] - head);
+            head = request[j];
+            printf(" -> %d", head);
+        }
+    } else {  // Left direction
+        for (j = i - 1; j >= 0; j--) {
+            totalMovement += abs(request[j] - head);
+            head = request[j];
+            printf(" -> %d", head);
+        }
+
+        totalMovement += abs(head - 0);
+        head = 0;
+        printf(" -> %d", head);
+
+        for (j = i + 1; j < n; j++) {
+            totalMovement += abs(request[j] - head);
+            head = request[j];
+            printf(" -> %d", head);
+        }
+    }
+
+    printf("\n\nTotal Head Movement = %d\n", totalMovement);
+    return 0;
+}
